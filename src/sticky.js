@@ -66,7 +66,6 @@
 				this.onResize = this.onResize.bind(this);
 
 				window.addEventListener('scroll', this.onScroll);
-
 				window.addEventListener('resize', this.onResize);
 			}
 		};
