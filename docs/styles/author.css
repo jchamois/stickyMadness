@@ -575,12 +575,12 @@ hr {
     width: 50px;
     z-index: 3
 }
-.js-sticked {
+.is-sticked {
     position: fixed;
     top: 0;
-    width:300px;
+    width: 300px;
 }
-.js-stuck {
+.is-stuck {
     position: absolute;
     top: auto;
     bottom: 0

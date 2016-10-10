@@ -1,154 +1,144 @@
-// REQUIRE CLOSEST POLYFILL JAVASCRIPT
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD
+        define(['checkvisibility', 'element-closest'], factory);
+    } else if (typeof exports === 'object') {
+        // Node, CommonJS-like
+        module.exports = factory(require('checkvisibility'), require('element-closest'));
+    } else {
+        // Browser globals (root is window)
+        root.returnExports = factory(root.CheckVisibility);
+    }
+}(this, function (CheckVisibility) {
 
-// matches polyfill
+	return (function (window, document, exportName) {
 
-this.Element && function (ElementPrototype) {
-	ElementPrototype.matches = ElementPrototype.matches ||
-	ElementPrototype.matchesSelector ||
-	ElementPrototype.webkitMatchesSelector ||
-	ElementPrototype.msMatchesSelector ||
-	function (selector) {
-		var node = this, nodes = (node.parentNode || node.document).querySelectorAll(selector), i = -1;
-		while (nodes[++i] && nodes[i] != node);
-		return !!nodes[i];
-	};
-}(Element.prototype);
-
-// closest polyfill require matches
-
-this.Element && function (ElementPrototype) {
-	ElementPrototype.closest = ElementPrototype.closest ||
-	function (selector) {
-		var el = this;
-		while (el.matches && !el.matches(selector)) el = el.parentNode;
-		return el.matches ? el : null;
-	};
-}(Element.prototype);
-
-
-// LET'S DO A STICKY
-
-window.sticky = (function () {
-
-	function sticky(el, cssStickClass, cssStuckClass, stickyLimitClass) {
-
-		var self = this;
-
-		self.el = el;
-		self.cssStickClass = cssStickClass;
-		self.cssStuckClass = cssStuckClass;
-		self.parent = self.el.parentNode;
-		self.stickyLimitClass = stickyLimitClass;
-		self.stickyLimit = self.el.closest('.'+self.stickyLimitClass);
-
-		self.stickyLimitHeight = self.stickyLimit.offsetHeight;
-		self.el.height = self.el.offsetHeight;
-
-		var stuckLimit = (self.stickyLimit.offsetHeight - self.el.offsetHeight);
-		var isSticked;
-		var isStucked;
-		var parentFromTop;
-		var lastScrollY = 0;
-
-		self.ticking = false;
-		self.raf = null;
-
-		self.onScroll = function(){
-			lastScrollY = window.scrollY;
-			self.requestTick();
+		var defaultOptions = {
+			stickClass: 'is-sticked',
+			stuckClass: 'is-stuck',
+			stuckLimitSelector: '.sticky-container' // must be a ancestor of el
 		};
 
-		self.requestTick = function(){
+		function Sticky(el, opt) {
+			this.options = defaultOptions;
 
-			if(!self.ticking) {
-				self.raf = window.requestAnimationFrame(self.StickOrStuck);
-				self.ticking = true;
-			}
-		};
-
-		this.disable = function(){
-
-			// remove scroll handler and clean class relative to the sticky state
-			window.removeEventListener('scroll', self.onScroll);
-
-			self.el.classList.remove(self.cssStickClass);
-			self.el.classList.remove(self.cssStuckClass);
-		};
-
-		this.enable = function(){
-			_init();
-		};
-
-		this.updateStuckLimit = function(){
-			stuckLimit = (self.stickyLimit.offsetHeight - self.el.offsetHeight);
-		};
-
-		this.StickOrStuck = function() {
-
-			//console.log('scrollHandler is fired');
-			isSticked = self.el.classList.contains(self.cssStickClass);
-			isStucked = self.el.classList.contains(self.cssStuckClass);
-
-			parentFromTop = parseInt(self.parent.checkVisibility.fromTop());
-
-			// ON STICK
-
-			if(parentFromTop > 0 && parentFromTop < stuckLimit && !isSticked ) {
-
-				self.el.classList.add(self.cssStickClass);
+			if (opt) {
+				this.options.stickClass = opt.stickClass || defaultOptions.stickClass;
+				this.options.stuckClass = opt.stuckClass || defaultOptions.stuckClass;
+				this.options.stuckLimitSelector = opt.stuckLimitSelector || defaultOptions.stuckLimitSelector;
 			}
 
-			// ON DESTICK
+			this.el = el;
+			this.parent = this.el.parentNode;
 
-			if(parentFromTop <= 0 && isSticked ) {
+			this.stickyLimit = this.el.closest(this.options.stuckLimitSelector);
 
-				self.el.classList.remove(self.cssStickClass);
-			}
+			this.stickyLimitHeight = this.stickyLimit.offsetHeight;
+			this.el.height = this.el.offsetHeight;
 
-			// ON STUCK
+			this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight);
 
-			if(parentFromTop >= stuckLimit && !isStucked) {
+			this.isSticked = null;
+			this.isStucked = null;
 
-				self.el.classList.add(self.cssStuckClass);
-			}
+			var parentFromTop;
+			var lastScrollY = 0;
 
-			// ON DESTUCK
+			this.ticking = false;
+			this.raf = null;
 
-			if(parentFromTop < stuckLimit && isStucked) {
+			this.init();
+		}
 
-				self.el.classList.remove(self.cssStuckClass);
-			}
-
-			self.ticking = false;
-		};
-
-		function _init() {
+		Sticky.prototype.init = function init() {
 
 			// init visibility detection on parent
 
-			if(self.stickyLimit.offsetHeight > self.el.offsetHeight){
+			if (this.stickyLimit.offsetHeight > this.el.offsetHeight) {
 
-				self.parent.checkVisibility = new checkVisibility(self.parent);
+				this.parent.checkVisibility = new CheckVisibility(this.parent);
 
 				// init handler on ready
 
-				self.onScroll();
+				this.onScroll();
 
-				window.addEventListener('scroll', self.onScroll);
+				window.addEventListener('scroll', this.onScroll.bind(this));
 
-				window.addEventListener('resize', function() {
-
-					// refresh position
-					self.parent.checkVisibility.updatePosition();
-
-					stuckLimit = (self.stickyLimit.offsetHeight - self.el.offsetHeight);
-				});
+				window.addEventListener('resize', this.onResize.bind(this));
 			}
-		}
+		};
 
-		_init();
-	}
 
-	return sticky;
+		Sticky.prototype.onScroll = function onScroll() {
+			lastScrollY = window.scrollY;
+			this.requestTick();
+		};
 
-})();
+		Sticky.prototype.onResize = function onResize() {
+			// refresh position
+			this.parent.checkVisibility.updatePosition();
+
+			this.stuckLimit = this.stickyLimit.offsetHeight - this.el.offsetHeight;
+		};
+
+		Sticky.prototype.requestTick = function requestTick() {
+
+			if (!this.ticking) {
+				this.raf = window.requestAnimationFrame(this.stickOrStuck.bind(this));
+				this.ticking = true;
+			}
+		};
+
+		Sticky.prototype.disable = function disable() {
+
+			// remove event handler and clean class relative to the sticky state
+			window.removeEventListener('scroll', this.onScroll.bind(this));
+			window.removeEventListener('resize', this.onResize.bind(this));
+
+			this.el.classList.remove(this.options.stickClass);
+			this.el.classList.remove(this.options.stuckClass);
+		};
+
+		Sticky.prototype.enable = function enable() {
+			this.init();
+		};
+
+		Sticky.prototype.updateStuckLimit = function updateStuckLimit() {
+			this.stuckLimit = this.stickyLimit.offsetHeight - this.el.offsetHeight;
+		};
+
+		Sticky.prototype.stickOrStuck = function stickOrStuck()  {
+
+			// console.log('scrollHandler is fired');
+			this.isSticked = this.el.classList.contains(this.options.stickClass);
+			this.isStucked = this.el.classList.contains(this.options.stuckClass);
+
+			parentFromTop = parseInt(this.parent.checkVisibility.fromTop());
+
+			// ON STICK
+			if (parentFromTop > 0 && parentFromTop < this.stuckLimit && !this.isSticked) {
+				this.el.classList.add(this.options.stickClass);
+			}
+
+			// ON DESTICK
+			if (parentFromTop <= 0 && this.isSticked ) {
+				this.el.classList.remove(this.options.stickClass);
+			}
+
+			// ON STUCK
+			if (parentFromTop >= this.stuckLimit && !this.isStucked) {
+				this.el.classList.add(this.options.stuckClass);
+			}
+
+			// ON DESTUCK
+			if (parentFromTop < this.stuckLimit && this.isStucked) {
+				this.el.classList.remove(this.options.stuckClass);
+			}
+
+			this.ticking = false;
+		};
+
+		return Sticky;
+
+	})(window, document, 'Sticky');
+}));
