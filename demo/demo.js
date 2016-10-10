@@ -38,7 +38,7 @@ Array.prototype.forEach.call(APP.stickyElem.images, function (img, i) {
 
 // Wait for all promise to be resolved
 
-Promise.all(APP.stickyElem.promArr).then(function (response) {
+Promise.all(APP.stickyElem.promArr).then(function () {
 
 	if (APP.mediaQuery.lg.matches && !APP.stickyElem.sticky) {
 		// a l'init on instancie sticky si il est null et qu on est dans la bonne MQ
@@ -47,7 +47,7 @@ Promise.all(APP.stickyElem.promArr).then(function (response) {
 
 	APP.mediaQuery.lg.addListener(function (e) {
 
-		if(e.matches){
+		if (e.matches) {
 			if (!APP.stickyElem.sticky) {
 				console.log('Match la MQ et sticky non instancié => on init');
 				APP.stickyElem.sticky = new window.Sticky(APP.stickyElem);
@@ -63,7 +63,3 @@ Promise.all(APP.stickyElem.promArr).then(function (response) {
 		}
 	});
 });
-
-
-
-

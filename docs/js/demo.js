@@ -84,7 +84,7 @@
 
 	// Wait for all promise to be resolved
 
-	Promise.all(APP.stickyElem.promArr).then(function (response) {
+	Promise.all(APP.stickyElem.promArr).then(function () {
 
 		if (APP.mediaQuery.lg.matches && !APP.stickyElem.sticky) {
 			// a l'init on instancie sticky si il est null et qu on est dans la bonne MQ
@@ -93,7 +93,7 @@
 
 		APP.mediaQuery.lg.addListener(function (e) {
 
-			if(e.matches){
+			if (e.matches) {
 				if (!APP.stickyElem.sticky) {
 					console.log('Match la MQ et sticky non instancié => on init');
 					APP.stickyElem.sticky = new window.Sticky(APP.stickyElem);
@@ -109,10 +109,6 @@
 			}
 		});
 	});
-
-
-
-
 
 
 /***/ },
@@ -183,9 +179,12 @@
 
 					this.onScroll();
 
-					window.addEventListener('scroll', this.onScroll.bind(this));
+					this.onScroll = this.onScroll.bind(this);
+					this.onResize = this.onResize.bind(this);
 
-					window.addEventListener('resize', this.onResize.bind(this));
+					window.addEventListener('scroll', this.onScroll);
+
+					window.addEventListener('resize', this.onResize);
 				}
 			};
 
@@ -213,8 +212,8 @@
 			Sticky.prototype.disable = function disable() {
 
 				// remove event handler and clean class relative to the sticky state
-				window.removeEventListener('scroll', this.onScroll.bind(this));
-				window.removeEventListener('resize', this.onResize.bind(this));
+				window.removeEventListener('scroll', this.onScroll);
+				window.removeEventListener('resize', this.onResize);
 
 				this.el.classList.remove(this.options.stickClass);
 				this.el.classList.remove(this.options.stuckClass);

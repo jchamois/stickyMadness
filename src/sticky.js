@@ -62,9 +62,12 @@
 
 				this.onScroll();
 
-				window.addEventListener('scroll', this.onScroll.bind(this));
+				this.onScroll = this.onScroll.bind(this);
+				this.onResize = this.onResize.bind(this);
 
-				window.addEventListener('resize', this.onResize.bind(this));
+				window.addEventListener('scroll', this.onScroll);
+
+				window.addEventListener('resize', this.onResize);
 			}
 		};
 
@@ -92,8 +95,8 @@
 		Sticky.prototype.disable = function disable() {
 
 			// remove event handler and clean class relative to the sticky state
-			window.removeEventListener('scroll', this.onScroll.bind(this));
-			window.removeEventListener('resize', this.onResize.bind(this));
+			window.removeEventListener('scroll', this.onScroll);
+			window.removeEventListener('resize', this.onResize);
 
 			this.el.classList.remove(this.options.stickClass);
 			this.el.classList.remove(this.options.stuckClass);

@@ -1,24 +1,24 @@
 {
-  "name": "checkvisibility",
+  "name": "sticky",
   "version": "0.0.0",
-  "description": "Basically **checkVisibility** allows to detect positioning of an element in the viewport. It takes one param : the DOM elem, you want to track",
-  "main": "src/checkvisibility.js",
+  "description": "",
+  "main": "src/sticky.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack ./demo/demo.js ./docs/js/demo.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jchamois/checkvisibility.git"
+    "url": "git+https://github.com/jchamois/stickyMadness.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jchamois/checkvisibility/issues"
+    "url": "https://github.com/jchamois/stickyMadness/issues"
   },
-  "homepage": "https://github.com/jchamois/checkvisibility#readme",
+  "homepage": "https://github.com/jchamois/stickyMadness#readme",
   "dependencies": {
-    "checkvisibility": "ryuran/checkvisibility#npm",
+    "sticky": "ryuran/checkvisibility",
     "element-closest": "2.0.1"
   },
   "devDependencies": {

@@ -578,7 +578,8 @@ hr {
 .is-sticked {
     position: fixed;
     top: 0;
-    width: 300px;
+    width: calc(((100vw - 4rem) * (100 / 3)) / 100);
+    max-width: calc(((1234px - 4rem) * (100 / 3)) / 100);
 }
 .is-stuck {
     position: absolute;
