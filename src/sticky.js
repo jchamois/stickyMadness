@@ -14,8 +14,8 @@
 	return (function (window, document, exportName) {
 
 		var defaultOptions = {
-			stickClass: 'is-sticked',
-			stuckClass: 'is-stuck',
+			stickClass: 'js-sticked',
+			stuckClass: 'js-stuck',
 			stuckLimitSelector: '.sticky-container', // must be a ancestor of el
 			getStickyLimitTop: null,
 			getStickyLimitBottom: null

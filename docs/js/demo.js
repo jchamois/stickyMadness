@@ -131,9 +131,11 @@
 		return (function (window, document, exportName) {
 
 			var defaultOptions = {
-				stickClass: 'is-sticked',
-				stuckClass: 'is-stuck',
-				stuckLimitSelector: '.sticky-container' // must be a ancestor of el
+				stickClass: 'js-sticked',
+				stuckClass: 'js-stuck',
+				stuckLimitSelector: '.sticky-container', // must be a ancestor of el
+				getStickyLimitTop: null,
+				getStickyLimitBottom: null
 			};
 
 			function Sticky(el, opt) {
@@ -143,15 +145,15 @@
 					this.options.stickClass = opt.stickClass || defaultOptions.stickClass;
 					this.options.stuckClass = opt.stuckClass || defaultOptions.stuckClass;
 					this.options.stuckLimitSelector = opt.stuckLimitSelector || defaultOptions.stuckLimitSelector;
+					this.getStickyLimitTop = opt.getStickyLimitTop;
+					this.getStickyLimitBottom = opt.getStickyLimitBottom;
 				}
 
 				this.el = el;
+
 				this.parent = this.el.parentNode;
 
 				this.stickyLimit = this.el.closest(this.options.stuckLimitSelector);
-
-				this.stickyLimitHeight = this.stickyLimit.offsetHeight;
-				this.el.height = this.el.offsetHeight;
 
 				this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight);
 
@@ -183,11 +185,9 @@
 					this.onResize = this.onResize.bind(this);
 
 					window.addEventListener('scroll', this.onScroll);
-
 					window.addEventListener('resize', this.onResize);
 				}
 			};
-
 
 			Sticky.prototype.onScroll = function onScroll() {
 				lastScrollY = window.scrollY;
@@ -198,7 +198,7 @@
 				// refresh position
 				this.parent.checkVisibility.updatePosition();
 
-				this.stuckLimit = this.stickyLimit.offsetHeight - this.el.offsetHeight;
+				this.updateStuckLimit();
 			};
 
 			Sticky.prototype.requestTick = function requestTick() {
