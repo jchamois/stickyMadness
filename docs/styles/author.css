@@ -578,8 +578,8 @@ hr {
 .js-sticked {
     position: fixed;
     top: 0;
-    width: calc(((100vw - 4rem) * 25) / 100);
-    max-width: calc(((1234px - 4rem) * 25) / 100);
+    width: calc((100% - 4rem) / 4);
+    max-width: calc((1234px - 4rem) / 4);
 }
 .js-stuck {
     position: absolute;
