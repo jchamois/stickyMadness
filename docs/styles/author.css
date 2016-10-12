@@ -584,7 +584,9 @@ hr {
 .js-stuck {
     position: absolute;
     top: auto;
-    bottom: 0
+    bottom: 0;
+    width: auto;
+    max-width: auto;
 }
 .instagram-media {
     margin: 0 auto
