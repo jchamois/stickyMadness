@@ -16,9 +16,7 @@
 		var defaultOptions = {
 			stickClass: 'js-sticked',
 			stuckClass: 'js-stuck',
-			stuckLimitSelector: '.sticky-container', // must be a ancestor of el
-			getStickyLimitTop: null,
-			getStickyLimitBottom: null
+			stuckLimitSelector: '.sticky-container' // must be a ancestor of el
 		};
 
 		function Sticky(el, opt) {
@@ -28,8 +26,6 @@
 				this.options.stickClass = opt.stickClass || defaultOptions.stickClass;
 				this.options.stuckClass = opt.stuckClass || defaultOptions.stuckClass;
 				this.options.stuckLimitSelector = opt.stuckLimitSelector || defaultOptions.stuckLimitSelector;
-				this.getStickyLimitTop = opt.getStickyLimitTop;
-				this.getStickyLimitBottom = opt.getStickyLimitBottom;
 			}
 
 			this.el = el;
@@ -38,7 +34,7 @@
 
 			this.stickyLimit = this.el.closest(this.options.stuckLimitSelector);
 
-			this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight);
+			this.updateStuckLimit();
 
 			this.isSticked = null;
 			this.isStucked = null;
@@ -56,7 +52,7 @@
 
 			// init visibility detection on parent
 
-			if (this.stickyLimit.offsetHeight > this.el.offsetHeight) {
+			if (this.stuckLimit > 0) {
 
 				this.parent.checkVisibility = new CheckVisibility(this.parent);
 
@@ -107,7 +103,8 @@
 		};
 
 		Sticky.prototype.updateStuckLimit = function updateStuckLimit() {
-			this.stuckLimit = this.stickyLimit.offsetHeight - this.el.offsetHeight;
+			var delta = this.parent.getBoundingClientRect().top - this.stickyLimit.getBoundingClientRect().top;
+			this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.el.offsetHeight;
 		};
 
 		Sticky.prototype.stickOrStuck = function stickOrStuck()  {
