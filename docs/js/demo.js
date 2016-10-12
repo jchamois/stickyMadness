@@ -160,8 +160,8 @@
 				this.isSticked = null;
 				this.isStucked = null;
 
-				var parentFromTop;
-				var lastScrollY = 0;
+				this.parentFromTop = 0;
+				this.lastScrollY = 0;
 
 				this.ticking = false;
 				this.raf = null;
@@ -190,7 +190,7 @@
 			};
 
 			Sticky.prototype.onScroll = function onScroll() {
-				lastScrollY = window.scrollY;
+				this.lastScrollY = window.scrollY;
 				this.requestTick();
 			};
 
@@ -233,25 +233,25 @@
 				this.isSticked = this.el.classList.contains(this.options.stickClass);
 				this.isStucked = this.el.classList.contains(this.options.stuckClass);
 
-				parentFromTop = parseInt(this.parent.checkVisibility.fromTop());
+				this.parentFromTop = parseInt(this.parent.checkVisibility.fromTop());
 
 				// ON STICK
-				if (parentFromTop > 0 && parentFromTop < this.stuckLimit && !this.isSticked) {
+				if (this.parentFromTop > 0 && this.parentFromTop < this.stuckLimit && !this.isSticked) {
 					this.el.classList.add(this.options.stickClass);
 				}
 
 				// ON DESTICK
-				if (parentFromTop <= 0 && this.isSticked ) {
+				if (this.parentFromTop <= 0 && this.isSticked ) {
 					this.el.classList.remove(this.options.stickClass);
 				}
 
 				// ON STUCK
-				if (parentFromTop >= this.stuckLimit && !this.isStucked) {
+				if (this.parentFromTop >= this.stuckLimit && !this.isStucked) {
 					this.el.classList.add(this.options.stuckClass);
 				}
 
 				// ON DESTUCK
-				if (parentFromTop < this.stuckLimit && this.isStucked) {
+				if (this.parentFromTop < this.stuckLimit && this.isStucked) {
 					this.el.classList.remove(this.options.stuckClass);
 				}
 
