@@ -12,6 +12,9 @@ APP.stickyElem = document.querySelector('.js-stickable');
 APP.stickyElem.promArr = [];
 APP.stickyElem.images = APP.stickyElem.querySelectorAll('img');
 
+
+var header = document.getElementById('header');
+
 // PROMISE API
 
 APP.imgPromise = function (img) {
@@ -42,7 +45,13 @@ Promise.all(APP.stickyElem.promArr).then(function () {
 
 	if (APP.mediaQuery.lg.matches && !APP.stickyElem.sticky) {
 		// a l'init on instancie sticky si il est null et qu on est dans la bonne MQ
-		APP.stickyElem.sticky = new window.Sticky(APP.stickyElem);
+		APP.stickyElem.sticky = new window.Sticky(APP.stickyElem,
+			{
+				offsetTop: function (){
+					return header.offsetHeight;
+				}
+			}
+		);
 	}
 
 	APP.mediaQuery.lg.addListener(function (e) {

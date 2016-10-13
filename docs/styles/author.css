@@ -580,13 +580,14 @@ hr {
     top: 0;
     width: calc((100% - 4rem) / 4);
     max-width: calc((1234px - 4rem) / 4);
+    z-index: 7
 }
 .js-stuck {
     position: absolute;
-    top: auto;
+    top: auto !important; /* stonger than inline si offset */
     bottom: 0;
     width: auto;
-    max-width: auto;
+    max-width: none;
 }
 .instagram-media {
     margin: 0 auto

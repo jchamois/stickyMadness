@@ -58,6 +58,9 @@
 	APP.stickyElem.promArr = [];
 	APP.stickyElem.images = APP.stickyElem.querySelectorAll('img');
 
+
+	var header = document.getElementById('header');
+
 	// PROMISE API
 
 	APP.imgPromise = function (img) {
@@ -88,7 +91,13 @@
 
 		if (APP.mediaQuery.lg.matches && !APP.stickyElem.sticky) {
 			// a l'init on instancie sticky si il est null et qu on est dans la bonne MQ
-			APP.stickyElem.sticky = new window.Sticky(APP.stickyElem);
+			APP.stickyElem.sticky = new window.Sticky(APP.stickyElem,
+				{
+					offsetTop: function (){
+						return header.offsetHeight;
+					}
+				}
+			);
 		}
 
 		APP.mediaQuery.lg.addListener(function (e) {
@@ -133,9 +142,16 @@
 			var defaultOptions = {
 				stickClass: 'js-sticked',
 				stuckClass: 'js-stuck',
-				stuckLimitSelector: '.sticky-container' // must be a ancestor of el
+				stuckLimitSelector: '.sticky-container', // must be a ancestor of el
+				offsetTop: 0
 			};
 
+			// utils
+			function isFunction(f) {
+				return f && Object.prototype.toString.call(f) === '[object Function]';
+			}
+
+			// @contructor
 			function Sticky(el, opt) {
 				this.options = defaultOptions;
 
@@ -143,6 +159,7 @@
 					this.options.stickClass = opt.stickClass || defaultOptions.stickClass;
 					this.options.stuckClass = opt.stuckClass || defaultOptions.stuckClass;
 					this.options.stuckLimitSelector = opt.stuckLimitSelector || defaultOptions.stuckLimitSelector;
+					this.options.offsetTop = opt.offsetTop || defaultOptions.offsetTop;
 				}
 
 				this.el = el;
@@ -232,14 +249,18 @@
 
 				this.parentFromTop = parseInt(this.parent.checkVisibility.fromTop());
 
+				var offsetTop = this.getOffsetTop();
+
 				// ON STICK
-				if (this.parentFromTop > 0 && this.parentFromTop < this.stuckLimit && !this.isSticked) {
+				if (this.parentFromTop > -(offsetTop) && this.parentFromTop < this.stuckLimit && !this.isSticked) {
 					this.el.classList.add(this.options.stickClass);
+					this.el.style.top = offsetTop + 'px';
 				}
 
 				// ON DESTICK
-				if (this.parentFromTop <= 0 && this.isSticked ) {
+				if (this.parentFromTop <= -(offsetTop) && this.isSticked ) {
 					this.el.classList.remove(this.options.stickClass);
+					this.el.style.removeProperty('top');
 				}
 
 				// ON STUCK
@@ -252,7 +273,14 @@
 					this.el.classList.remove(this.options.stuckClass);
 				}
 
+
+				console.log('scrollHandler is fired : ', this.el.style.top);
+
 				this.ticking = false;
+			};
+
+			Sticky.prototype.getOffsetTop = function getOffsetTop() {
+				return isFunction(this.options.offsetTop) ? this.options.offsetTop() : this.options.offsetTop || 0;
 			};
 
 			return Sticky;
