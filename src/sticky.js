@@ -112,7 +112,7 @@
 
 		Sticky.prototype.updateStuckLimit = function updateStuckLimit() {
 			var delta = this.parent.getBoundingClientRect().top - this.stickyLimit.getBoundingClientRect().top;
-			this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.el.offsetHeight;
+			this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.getOffsetTop() - this.el.offsetHeight;
 		};
 
 		Sticky.prototype.stickOrStuck = function stickOrStuck()  {

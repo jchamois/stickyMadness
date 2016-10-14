@@ -133,11 +133,11 @@
 	        module.exports = factory(require('checkvisibility'), require('element-closest'));
 	    } else {
 	        // Browser globals (root is window)
-	        root.returnExports = factory(root.CheckVisibility);
+	        root.Sticky = factory(root.CheckVisibility);
 	    }
 	}(this, function (CheckVisibility) {
 
-		return (function (window, document, exportName) {
+		return (function (window, document) {
 
 			var defaultOptions = {
 				stickClass: 'js-sticked',
@@ -238,7 +238,7 @@
 
 			Sticky.prototype.updateStuckLimit = function updateStuckLimit() {
 				var delta = this.parent.getBoundingClientRect().top - this.stickyLimit.getBoundingClientRect().top;
-				this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.el.offsetHeight;
+				this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.getOffsetTop() - this.el.offsetHeight;
 			};
 
 			Sticky.prototype.stickOrStuck = function stickOrStuck()  {
@@ -273,9 +273,6 @@
 					this.el.classList.remove(this.options.stuckClass);
 				}
 
-
-				console.log('scrollHandler is fired : ', this.el.style.top);
-
 				this.ticking = false;
 			};
 
@@ -285,7 +282,7 @@
 
 			return Sticky;
 
-		})(window, document, 'Sticky');
+		})(window, document);
 	}));
 
 
