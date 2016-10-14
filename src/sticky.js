@@ -147,9 +147,6 @@
 				this.el.classList.remove(this.options.stuckClass);
 			}
 
-
-			console.log('scrollHandler is fired : ', this.el.style.top);
-
 			this.ticking = false;
 		};
 
