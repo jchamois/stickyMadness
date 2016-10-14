@@ -230,9 +230,11 @@
 
 				this.el.classList.remove(this.options.stickClass);
 				this.el.classList.remove(this.options.stuckClass);
+				this.el.style.removeProperty('top');
 			};
 
 			Sticky.prototype.enable = function enable() {
+				this.updateStuckLimit();
 				this.init();
 			};
 
