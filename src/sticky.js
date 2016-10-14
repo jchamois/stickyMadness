@@ -7,11 +7,11 @@
         module.exports = factory(require('checkvisibility'), require('element-closest'));
     } else {
         // Browser globals (root is window)
-        root.returnExports = factory(root.CheckVisibility);
+        root.Sticky = factory(root.CheckVisibility);
     }
 }(this, function (CheckVisibility) {
 
-	return (function (window, document, exportName) {
+	return (function (window, document) {
 
 		var defaultOptions = {
 			stickClass: 'js-sticked',
@@ -159,5 +159,5 @@
 
 		return Sticky;
 
-	})(window, document, 'Sticky');
+	})(window, document);
 }));
