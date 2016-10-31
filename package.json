@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/jchamois/stickyMadness#readme",
   "dependencies": {
-    "sticky": "ryuran/checkvisibility",
+    "checkvisibility": "https://github.com/jchamois/checkvisibility.git",
     "element-closest": "2.0.1"
   },
   "devDependencies": {
