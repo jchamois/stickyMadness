@@ -1,0 +1,24 @@
+{
+  "name": "stickymadness",
+  "description": "Sticky an element on your page",
+  "main": "src/sticky.js",
+  "authors": [
+    "Jeremy Chamois <jchamois@clever-age.com>"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "sticky"
+  ],
+  "homepage": "https://github.com/jchamois/stickyMadness",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "checkvisibility": "https://github.com/jchamois/checkvisibility.git",
+    "element-closest": "2.0.1"
+  }
+}
