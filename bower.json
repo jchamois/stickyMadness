@@ -16,6 +16,6 @@
   ],
   "dependencies": {
     "checkvisibility": "^1.0.2",
-    "element-closest": "https://github.com/jonathantneal/closest"
+    "element-closest": "https://github.com/jchamois/closest.git"
   }
 }
