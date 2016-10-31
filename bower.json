@@ -1,5 +1,5 @@
 {
-  "name": "stickymadness",
+  "name": "stickyMadness",
   "description": "Sticky an element on your page",
   "main": "src/sticky.js",
   "authors": [
@@ -18,7 +18,7 @@
     "tests"
   ],
   "dependencies": {
-    "checkvisibility": "https://github.com/jchamois/checkvisibility.git",
+    "checkvisibility": "latest",
     "element-closest": "2.0.1"
   }
 }
