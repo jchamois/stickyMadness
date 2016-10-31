@@ -13,5 +13,9 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "checkvisibility": "^1.0.2",
+    "element-closest": "https://github.com/jonathantneal/closest"
+  }
 }
