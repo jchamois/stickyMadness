@@ -1,5 +1,5 @@
 {
-  "name": "stickyMadness",
+  "name": "stickymadness",
   "description": "Sticky an element on your page",
   "main": "src/sticky.js",
   "authors": [
