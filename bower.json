@@ -1,24 +1,17 @@
 {
   "name": "stickymadness",
-  "description": "Sticky an element on your page",
+  "description": "stickymadness allow you to stick elem on your page",
   "main": "src/sticky.js",
   "authors": [
-    "Jeremy Chamois <jchamois@clever-age.com>"
+    "Jeremy Chamois <jeremy.chamois@gmail.com>"
   ],
   "license": "ISC",
-  "keywords": [
-    "sticky"
-  ],
-  "homepage": "https://github.com/jchamois/stickyMadness",
+  "homepage": "https://github.com/jchamois/checkvisibility",
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    "checkvisibility": "latest",
-    "element-closest": "2.0.1"
-  }
+  ]
 }
