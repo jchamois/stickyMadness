@@ -82,9 +82,10 @@
 
 				this.options.onInit(this.el);
 
-				this.parent.checkVisibility = new CheckVisibility(this.parent);
-
 				if(this.stickyLimit.offsetHeight > this.parent.offsetHeight){
+
+					this.parent.checkVisibility = new CheckVisibility(this.parent);
+
 					// init handler on ready
 					this.onScroll();
 
@@ -152,7 +153,7 @@
 
 			Sticky.prototype.stickOrStuck = function stickOrStuck()  {
 
-				console.log('scrollHandler is fired');
+				// console.log('scrollHandler is fired');
 
 				this.isSticked = this.el.classList.contains(this.options.stickClass);
 				this.isStucked = this.el.classList.contains(this.options.stuckClass);
