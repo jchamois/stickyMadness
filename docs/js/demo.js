@@ -81,11 +81,10 @@
 
 				// @contructor
 				function Sticky(el, opt, jeaj) {
-					
+
 					this.options = defaultOptions;
 
 					if (opt) {
-
 						this.options.stickClass = opt.stickClass || defaultOptions.stickClass;
 						this.options.stuckClass = opt.stuckClass || defaultOptions.stuckClass;
 						this.options.stuckLimitSelector = opt.stuckLimitSelector || defaultOptions.stuckLimitSelector;
@@ -101,7 +100,7 @@
 						this.options.onUnStuck = opt.onUnStuck || defaultOptions.onUnStuck;
 						this.options.spacerElem = opt.spacerElem || defaultOptions.spacerElem;
 					}
-			
+
 					this.el = el;
 					this.parent = this.el.parentNode;
 					this.stickyLimit = this.el.closest(this.options.stuckLimitSelector);
@@ -117,30 +116,34 @@
 
 					this.ticking = false;
 					this.raf = null;
-				
+
 					this.isOffsetFunction = isFunction(this.options.offsetTop);
 
 					this.offsetTop = this.isOffsetFunction ? this.options.offsetTop() : this.options.offsetTop || 0;
+
+					this.initialized = false;
 					this.init();
 				}
 
 				Sticky.prototype.init = function init() {
+					if(this.initialized || this.stickyLimit.offsetHeight <= this.parent.offsetHeight){
+						return;
+					}
 
 					this.options.onInit(this.el);
 
-					if(this.stickyLimit.offsetHeight > this.parent.offsetHeight){ 
-						
-						this.parent.checkVisibility = new CheckVisibility(this.parent);
+					this.parent.checkVisibility = new CheckVisibility(this.parent);
 
-						// init handler on ready
-						this.onScroll();
-						
-						this.onScroll = this.onScroll.bind(this);
-						this.onResize = this.onResize.bind(this);
+					// init handler on ready
+					this.onScroll();
 
-						window.addEventListener('scroll', this.onScroll);
-						window.addEventListener('resize', this.onResize);
-					}
+					this.onScroll = this.onScroll.bind(this);
+					this.onResize = this.onResize.bind(this);
+
+					window.addEventListener('scroll', this.onScroll);
+					window.addEventListener('resize', this.onResize);
+
+					this.initialized = true;
 				};
 
 				Sticky.prototype.onScroll = function onScroll() {
@@ -179,19 +182,19 @@
 					this.options.onEnabling(this.el);
 
 					this.onScroll();
-						
+
 					this.onScroll = this.onScroll.bind(this);
 					this.onResize = this.onResize.bind(this);
 
 					window.addEventListener('scroll', this.onScroll);
 					window.addEventListener('resize', this.onResize);
-					
+
 				};
 
 				Sticky.prototype.updateStuckLimit = function updateStuckLimit() {
 
-					this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight) - this.spacerHeight;	
-					this.offsetTop = this.isOffsetFunction ? this.options.offsetTop() : this.options.offsetTop || 0;	
+					this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight) - this.spacerHeight;
+					this.offsetTop = this.isOffsetFunction ? this.options.offsetTop() : this.options.offsetTop || 0;
 
 					// var delta = this.parent.getBoundingClientRect().top - this.stickyLimit.getBoundingClientRect().top;
 					// this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.getOffsetTop() - this.el.offsetHeight;
@@ -199,7 +202,7 @@
 
 				Sticky.prototype.stickOrStuck = function stickOrStuck()  {
 
-					console.log('scrollHandler is fired');
+					// console.log('scrollHandler is fired');
 
 					this.isSticked = this.el.classList.contains(this.options.stickClass);
 					this.isStucked = this.el.classList.contains(this.options.stuckClass);
@@ -209,13 +212,13 @@
 					// ON STICK
 					if (this.parentFromTop > this.offsetTop && this.parentFromTop < this.stuckLimit && !this.isSticked) {
 						this.el.classList.add(this.options.stickClass);
-						this.options.onStick(this.el);	
+						this.options.onStick(this.el);
 						this.el.style.top = this.spacerHeight + 'px';
 					}
 
 					// ON DESTICK
 					if (this.parentFromTop <= this.offsetTop && this.isSticked ) {
-						this.el.classList.remove(this.options.stickClass);	
+						this.el.classList.remove(this.options.stickClass);
 						this.options.onUnStick(this.el);
 						this.el.style.removeProperty('top');
 					}
@@ -245,170 +248,169 @@
 /* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (root, factory) {
-	    if (true) {
-	        // AMD
-	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	    } else if (typeof exports === 'object') {
-	        // Node, CommonJS-like
-	        module.exports = factory();
-	    } else {
-	        // Browser globals (root is window)
-	        root.returnExports = factory();
-	    }
-	}(this, function () {
+	var __WEBPACK_AMD_DEFINE_RESULT__;(function(window, document, exportName) {
 
-		return (function(window, document, exportName) {
+		var win = window;
+		var doc = document.documentElement;
+		var docBody = document.body;
 
-			var doc = document.documentElement;
-			var docBody = document.body;
+		var scrollY;
+		var scrollX;
 
-			var scrollY;
-			var scrollX;
+		var winHeight;
+		var winWidth;
 
-			var winHeight;
-			var winWidth;
+		var docHeight;
 
-			var docHeight;
+		var viewport = {};
 
-			var viewport = {};
+		var trackLength;
 
-			var trackLength;
+		/** @constructor
+		 *
+	     * @param {element} elem - DOM element.
+	     */
+		var CheckVisibility  = function (elem) {
+			this.elem = elem;
 
-			/** @constructor
-			 *
-		     * @param {element} elem - DOM element.
-		     */
-			var CheckVisibility  = function (elem) {
-				this.elem = elem;
+			this.bounds = {};
+			this.deltas = {};
 
-				this.bounds = {};
-				this.deltas = {};
+			// init
+			this.updatePosition();
+		};
 
-				// init
-				this.updatePosition();
+		/** @function
+		 * Measure position of viewport
+		 */
+		CheckVisibility.prototype.updatePosition = function updatePosition() {
+			docHeight = Math.max(docBody.offsetHeight, doc.scrollHeight);
+			winHeight = Math.max(win.innerHeight, doc.clientHeight);
+			winWidth = Math.max(win.innerWidth, doc.clientWidth);
+		};
+
+		/** @function
+		 * Measure bounds and delta of element
+		 *
+		 * @param {Number} y - >0 and <1
+		 */
+		CheckVisibility.prototype.measure = function measure(y) {
+			var elemHeight = this.elem.offsetHeight;
+			var elemWidth = this.elem.offsetWidth;
+			var rect = this.elem.getBoundingClientRect(); // getBoundingClientRect CAUSES MAJOR REPAINT == fallback needed but no solution yet
+
+			scrollY = win.pageYOffset; // IE 10 + purpose
+			//scrollX = win.pageXOffset;
+
+			viewport = {};
+
+			viewport.top = scrollY;
+
+			//viewport.right = viewport.left + winWidth;
+			viewport.bottom = viewport.top + winHeight;
+
+			this.bounds = {
+				top :  rect.top + scrollY
+				//left :  rect.left + scrollX
 			};
 
-			/** @function
-			 * Measure position of viewport
-			 */
-			CheckVisibility.prototype.updatePosition = function updatePosition() {
-				docHeight = Math.max(docBody.offsetHeight, doc.scrollHeight);
-				winHeight = Math.max(window.innerHeight, doc.clientHeight);
-				winWidth = Math.max(window.innerWidth, doc.clientWidth);
-			};
+			//bounds.right = bounds.left + elemWidth;
+			this.bounds.bottom = this.bounds.top + elemHeight;
 
-			/** @function
-			 * Measure bounds and delta of element
-			 *
-			 * @param {Number} y - >0 and <1
-			 */
-			CheckVisibility.prototype.measure = function measure(y) {
-				var elemHeight = this.elem.offsetHeight;
-				var elemWidth = this.elem.offsetWidth;
-				var rect = this.elem.getBoundingClientRect(); // getBoundingClientRect CAUSES MAJOR REPAINT == fallback needed but no solution yet
-
-				scrollY = window.pageYOffset; // IE 10 + purpose
-				//scrollX = window.pageXOffset;
-
-				viewport = {};
-
-				viewport.top = scrollY;
-
-				//viewport.right = viewport.left + winWidth;
-				viewport.bottom = viewport.top + winHeight;
-
-				this.bounds = {
-					top :  rect.top + scrollY
-					//left :  rect.left + scrollX
+			if (y !== undefined) {
+				this.deltas = {
+					top : Math.min(1, (this.bounds.bottom - viewport.top) / elemHeight),
+					bottom : Math.min(1, (viewport.bottom -  this.bounds.top) / elemHeight)
 				};
+			}
+		};
 
-				//bounds.right = bounds.left + elemWidth;
-				this.bounds.bottom = this.bounds.top + elemHeight;
+		CheckVisibility.prototype.percentageScrolled = function percentageScrolled() {
+			trackLength = docHeight - winHeight;
 
-				if (y !== undefined) {
-					this.deltas = {
-						top : Math.min(1, (this.bounds.bottom - viewport.top) / elemHeight),
-						bottom : Math.min(1, (viewport.bottom -  this.bounds.top) / elemHeight)
-					};
-				}
-			};
+			return Math.floor(win.scrollY / trackLength * 100);
+		};
 
-			CheckVisibility.prototype.percentageScrolled = function percentageScrolled() {
-				trackLength = docHeight - winHeight;
+		/** @function
+		 * check if element is inView
+		 *
+		 * @param {Number} y - >0 and <1
+		 * @return {Boolean}
+		 */
+		CheckVisibility.prototype.inView = function inView(y) {
+			y = y || 0;
 
-				return Math.floor(window.scrollY / trackLength * 100);
-			};
+			this.measure(y);
 
-			/** @function
-			 * check if element is inView
-			 *
-			 * @param {Number} y - >0 and <1
-			 * @return {Boolean}
-			 */
-			CheckVisibility.prototype.inView = function inView(y) {
-				y = y || 0;
+			return (this.deltas.top * this.deltas.bottom) >= y; // true if elem is y x 100 % visible
+		};
 
-				this.measure(y);
+		/** @function
+		 *
+		 * @return {Number}
+		 */
+		CheckVisibility.prototype.fromBottom = function fromBottom() {
+			this.measure();
 
-				return (this.deltas.top * this.deltas.bottom) >= y; // true if elem is y x 100 % visible
-			};
+			return viewport.bottom - this.bounds.bottom; // distance from bottom window
+		};
 
-			/** @function
-			 *
-			 * @return {Number}
-			 */
-			CheckVisibility.prototype.fromBottom = function fromBottom() {
-				this.measure();
+		/** @function
+		 *
+		 * @return {Number}
+		 */
+		CheckVisibility.prototype.fromTop = function fromTop() {
+			this.measure();
 
-				return viewport.bottom - this.bounds.bottom; // distance from bottom window
-			};
+			return viewport.top - this.bounds.top; // distance from top window
+		};
 
-			/** @function
-			 *
-			 * @return {Number}
-			 */
-			CheckVisibility.prototype.fromTop = function fromTop() {
-				this.measure();
+		/** @function
+		 *
+		 * @return {Number}
+		 */
+		CheckVisibility.prototype.viewportTop = function viewportTop() {
+			this.measure();
 
-				return viewport.top - this.bounds.top; // distance from top window
-			};
+			return viewport.top; // Same as scrollY
+		};
 
-			/** @function
-			 *
-			 * @return {Number}
-			 */
-			CheckVisibility.prototype.viewportTop = function viewportTop() {
-				this.measure();
+		/** @function
+		 *
+		 * @return {Number}
+		 */
+		CheckVisibility.prototype.viewportBottom = function viewportBottom() {
+			this.measure();
 
-				return viewport.top; // Same as scrollY
-			};
+			return viewport.bottom; // distance from bottom scroll
+		};
 
-			/** @function
-			 *
-			 * @return {Number}
-			 */
-			CheckVisibility.prototype.viewportBottom = function viewportBottom() {
-				this.measure();
+		/** @function
+		 *
+		 * @return {Boolean}
+		 */
+		CheckVisibility.prototype.bottomOfWindow = function bottomOfWindow() {
+			this.measure();
 
-				return viewport.bottom; // distance from bottom scroll
-			};
+			return (viewport.top + winHeight) >= (docHeight); // return true if window scrolled to bottom
+		};
 
-			/** @function
-			 *
-			 * @return {Boolean}
-			 */
-			CheckVisibility.prototype.bottomOfWindow = function bottomOfWindow() {
-				this.measure();
+		// Export our constructor
+		if (true) {
+			!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+				return CheckVisibility;
+			}.call(exports, __webpack_require__, exports, module), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		}
+		else if (typeof module !== 'undefined' && module.exports) {
+			module.exports = CheckVisibility;
+		}
+		else {
+			window[exportName] = CheckVisibility;
+		}
 
-				return (viewport.top + winHeight) >= (docHeight); // return true if window scrolled to bottom
-			};
+		return CheckVisibility;
 
-			return CheckVisibility;
-
-		})(window, document, 'CheckVisibility');
-
-	}));
+	})(window, document, 'CheckVisibility');
 
 
 /***/ },
