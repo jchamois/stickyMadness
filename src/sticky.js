@@ -35,7 +35,7 @@
 
 			// @contructor
 			function Sticky(el, opt, jeaj) {
-				
+
 				this.options = defaultOptions;
 
 				if (opt) {
@@ -55,7 +55,7 @@
 					this.options.onUnStuck = opt.onUnStuck || defaultOptions.onUnStuck;
 					this.options.spacerElem = opt.spacerElem || defaultOptions.spacerElem;
 				}
-		
+
 				this.el = el;
 				this.parent = this.el.parentNode;
 				this.stickyLimit = this.el.closest(this.options.stuckLimitSelector);
@@ -71,7 +71,7 @@
 
 				this.ticking = false;
 				this.raf = null;
-			
+
 				this.isOffsetFunction = isFunction(this.options.offsetTop);
 
 				this.offsetTop = this.isOffsetFunction ? this.options.offsetTop() : this.options.offsetTop || 0;
@@ -82,13 +82,13 @@
 
 				this.options.onInit(this.el);
 
-				if(this.stickyLimit.offsetHeight > this.parent.offsetHeight){ 
-					
+				if(this.stickyLimit.offsetHeight > this.parent.offsetHeight){
+
 					this.parent.checkVisibility = new CheckVisibility(this.parent);
 
 					// init handler on ready
 					this.onScroll();
-					
+
 					this.onScroll = this.onScroll.bind(this);
 					this.onResize = this.onResize.bind(this);
 
@@ -133,19 +133,19 @@
 				this.options.onEnabling(this.el);
 
 				this.onScroll();
-					
+
 				this.onScroll = this.onScroll.bind(this);
 				this.onResize = this.onResize.bind(this);
 
 				window.addEventListener('scroll', this.onScroll);
 				window.addEventListener('resize', this.onResize);
-				
+
 			};
 
 			Sticky.prototype.updateStuckLimit = function updateStuckLimit() {
 
-				this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight) - this.spacerHeight;	
-				this.offsetTop = this.isOffsetFunction ? this.options.offsetTop() : this.options.offsetTop || 0;	
+				this.stuckLimit = (this.stickyLimit.offsetHeight - this.el.offsetHeight) - this.spacerHeight;
+				this.offsetTop = this.isOffsetFunction ? this.options.offsetTop() : this.options.offsetTop || 0;
 
 				// var delta = this.parent.getBoundingClientRect().top - this.stickyLimit.getBoundingClientRect().top;
 				// this.stuckLimit = this.stickyLimit.offsetHeight - delta - this.getOffsetTop() - this.el.offsetHeight;
@@ -153,7 +153,7 @@
 
 			Sticky.prototype.stickOrStuck = function stickOrStuck()  {
 
-				console.log('scrollHandler is fired');
+				// console.log('scrollHandler is fired');
 
 				this.isSticked = this.el.classList.contains(this.options.stickClass);
 				this.isStucked = this.el.classList.contains(this.options.stuckClass);
@@ -163,13 +163,13 @@
 				// ON STICK
 				if (this.parentFromTop > this.offsetTop && this.parentFromTop < this.stuckLimit && !this.isSticked) {
 					this.el.classList.add(this.options.stickClass);
-					this.options.onStick(this.el);	
+					this.options.onStick(this.el);
 					this.el.style.top = this.spacerHeight + 'px';
 				}
 
 				// ON DESTICK
 				if (this.parentFromTop <= this.offsetTop && this.isSticked ) {
-					this.el.classList.remove(this.options.stickClass);	
+					this.el.classList.remove(this.options.stickClass);
 					this.options.onUnStick(this.el);
 					this.el.style.removeProperty('top');
 				}
