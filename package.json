@@ -9,16 +9,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jchamois/stickyMadness.git"
+    "url": "git+https://github.com/20minutes/stickyMadness.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jchamois/stickyMadness/issues"
+    "url": "https://github.com/20minutes/stickyMadness/issues"
   },
-  "homepage": "https://github.com/jchamois/stickyMadness#readme",
+  "homepage": "https://github.com/20minutes/stickyMadness#readme",
   "dependencies": {
-    "checkvisibility": "https://github.com/jchamois/checkvisibility.git",
+    "checkvisibility": "20minutes/checkvisibility",
     "element-closest": "2.0.1"
   },
   "devDependencies": {
